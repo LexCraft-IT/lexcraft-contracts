@@ -1,0 +1,58 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main, develop]
+  push:
+    branches: [main, develop]
+
+permissions:
+  contents: read
+
+jobs:
+
+  files:
+    name: Contract files
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      # Every file reads as JSON and golden.json's ids are unique; the values are checked by the
+      # suites of the core, the web and the MCP server, which mount this repository.
+      - run: node scripts/ci/check_files.mjs
+
+  tooling:
+    name: Repository tooling
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      # A directory argument fails on Node 26: the glob names the test files.
+      - run: node --test '.claude/hooks/*.test.mjs'
+      - run: sh scripts/ci/tests/test_checks.sh
+      - run: sh scripts/tests/test_release_notes.sh
+
+  release-source:
+    name: Release source
+    if: github.event_name == 'pull_request' && github.base_ref == 'main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      # Through env, never inline: a branch name is attacker-controlled text.
+      - run: sh scripts/ci/check_release_source.sh "$HEAD_REF"
+        env:
+          HEAD_REF: ${{ github.head_ref }}
+
+  main-in-develop:
+    name: main inside develop
+    if: (github.event_name == 'push' && github.ref == 'refs/heads/develop') || (github.event_name == 'pull_request' && github.base_ref == 'develop')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - run: sh scripts/ci/check_main_in_develop.sh origin/main HEAD

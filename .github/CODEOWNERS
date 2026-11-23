@@ -1,0 +1,3 @@
+# Review requested, never required: GitHub asks the other owner to review a pull request that
+# touches these paths; the ruleset does not wait for it. The convention is the owners' decision.
+*    @capazme @LP-legal
