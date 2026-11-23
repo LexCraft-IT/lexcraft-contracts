@@ -15,6 +15,7 @@
     "/fetch_decision_pdf",
     "/search_decisions",
     "/search_eu_case_law",
+    "/search_corte_cost_massime",
     "/fetch_rassegne",
     "/search_rassegne",
     "/parse_query",
