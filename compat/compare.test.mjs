@@ -2,7 +2,8 @@
 // the rules held to this repository's own files.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { cpSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { cpSync, mkdirSync, mkdtempSync, readFileSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
+import { spawnSync } from 'node:child_process';
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -163,4 +164,13 @@ test('this repository against itself is none; with one more path it is a minor',
   writeFileSync(file, JSON.stringify(list, null, 2));
   assert.equal(compareTrees(repo, copy, rules).cls, 'minor');
   assert.equal(compareTrees(copy, repo, rules).cls, 'major', 'the other way round, it is a removal');
+});
+
+test('run as a command, also through a link to its folder, it prints the class', () => {
+  const linked = mkdtempSync(join(tmpdir(), 'compat-'));
+  made.push(linked);
+  symlinkSync(dirname(fileURLToPath(import.meta.url)), join(linked, 'compat'));
+  const run = spawnSync(process.execPath, [join(linked, 'compat', 'compare.mjs'), tree(paths(['/a'])), tree(paths(['/a', '/b']))], { encoding: 'utf8' });
+  assert.equal(run.status, 0, run.stderr);
+  assert.match(run.stdout, /^class: minor\n/);
 });

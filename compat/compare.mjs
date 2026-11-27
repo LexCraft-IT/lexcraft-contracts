@@ -9,9 +9,9 @@
 // «<class>\t<file>#<path>\t<what>». Exit 0 when it could compare, 2 when it could not (a missing
 // directory, a file that does not read as JSON). The older version is contained in the newer when
 // the class is none, patch or minor: that is what the core's pin check accepts (G-607, G-609).
-import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync, realpathSync, statSync } from 'node:fs';
 import { dirname, join, relative, sep } from 'node:path';
-import { fileURLToPath, pathToFileURL } from 'node:url';
+import { fileURLToPath } from 'node:url';
 
 export const CLASSES = ['none', 'patch', 'minor', 'major', 'blocked'];
 const rank = (cls) => CLASSES.indexOf(cls);
@@ -289,6 +289,10 @@ function main(argv) {
   }
 }
 
-if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+// Run as a command, also through a link (on macOS a temporary folder is under /var, a link to
+// /private/var): compare real paths, not the spelling node was given.
+const invoked = process.argv[1] && existsSync(process.argv[1])
+  && realpathSync(process.argv[1]) === realpathSync(fileURLToPath(import.meta.url));
+if (invoked) {
   process.exitCode = main(process.argv.slice(2));
 }
