@@ -1,0 +1,38 @@
+{
+  "version": 1,
+  "note": "How compat/compare.mjs classifies a change of this repository's sources/ and contract/ (README, «Versions»: G-607, G-609, G-610). These are the rules every version is judged by, the core's pin check included: a change here is decided by both owners.",
+  "compared": ["sources", "contract"],
+  "documentation": ["note", "about"],
+  "unsettled": ["proposed", "open"],
+  "promotions": [{ "from": "current", "to": "decided" }],
+  "keys": {
+    "sources/golden.json#/decision_citations/cases": ["input"],
+    "sources/golden.json#/decision_citations_in_text/cases": ["text", "within"],
+    "sources/decision-keys.json#/cases": ["key"],
+    "sources/norm-keys.json#/norms": ["item_key"],
+    "sources/norm-keys.json#/read_only": ["request", "validity"],
+    "sources/tar-seats.json#/seats": ["slug"],
+    "contract/anchors.json#/articles/*/passages": ["quote"],
+    "contract/anchors.json#/decisions/*/passages": ["quote"]
+  },
+  "atomic": [
+    "sources/golden.json#/norms/*/input",
+    "sources/golden.json#/recitals/*/input",
+    "sources/golden.json#/decisions/*/input",
+    "sources/decision-keys.json#/cases/*/identity",
+    "sources/norm-keys.json#/norms/*",
+    "sources/norm-entries.json#/cases/*/input",
+    "sources/norm-entries.json#/cases/*/entry",
+    "sources/recital-entries.json#/cases/*/input",
+    "sources/recital-entries.json#/cases/*/entry",
+    "sources/recital-entries.json#/cases/*/star",
+    "contract/pins.json#/password_rule",
+    "contract/frozen_projections.json#/*",
+    "contract/anchors.json#/articles/*/passages/*",
+    "contract/anchors.json#/decisions/*/passages/*",
+    "contract/anchors.json#/decisions/*/testo"
+  ],
+  "ordered": [],
+  "frozen": ["contract/frozen_projections.json", "contract/anchors.json"],
+  "thawed": []
+}

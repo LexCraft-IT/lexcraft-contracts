@@ -16,12 +16,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          # check_version.sh compares the files with the last release tag.
+          fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
       # Every file reads as JSON and golden.json's ids are unique; the values are checked by the
       # suites of the core, the web and the MCP server, which mount this repository.
       - run: node scripts/ci/check_files.mjs
+      # version.txt is never lower than the class of the files' change since the last tag (README,
+      # «Versions»), and a frozen file never changes unless the owners thaw it.
+      - run: sh scripts/ci/check_version.sh
 
   tooling:
     name: Repository tooling
@@ -32,7 +38,7 @@ jobs:
         with:
           node-version: '24'
       # A directory argument fails on Node 26: the glob names the test files.
-      - run: node --test '.claude/hooks/*.test.mjs'
+      - run: node --test '.claude/hooks/*.test.mjs' 'compat/*.test.mjs'
       - run: sh scripts/ci/tests/test_checks.sh
       - run: sh scripts/tests/test_release_notes.sh
 
