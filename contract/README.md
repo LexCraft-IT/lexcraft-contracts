@@ -11,6 +11,9 @@ core's source files.
 | `anchors.json` | rule 23 across repositories: real article texts and synthetic decision texts, each with its projection and the passages the server would store on it | the texts: frozen inputs; the rest: the server's `apps/server/tests/assistant/anchorsContract.ts` |
 | `legal-paths.json` | the paths the browser sends to the Python API: what the web's Vite config proxies in development and the ingress routes to the scrapers in production | written by hand, with the Python route; the web's `legalPaths.contract.test.ts` holds Vite to it, the core's `infra/ingress/paths.test.mjs` the Caddyfile |
 
+How a change of these files is classified (patch, minor, major, or blocked for the two frozen
+files of rule 23) and what each class asks of the repositories: the root `README.md`, «Versions».
+
 `pins.json` and `frozen_projections.json` are generated: `node scripts/contract/build.mjs` writes them, `--check` writes nothing and
 exits 1 naming the stale one. Never edit them by hand, and never re-record the frozen projections to
 make a test pass (rule 23 of the root `CLAUDE.md`: the golden is the core's, this is its copy).
@@ -51,8 +54,9 @@ When a server change moves passages, rewrite the computed fields from apps/serve
 npx dotenv -e .env.test -- tsx tests/assistant/writeAnchorsContract.ts
 ```
 
-then let the web's suite judge the new passages; commit both in the same change. Once the repositories
-are split and this folder is a submodule, a rewrite reaches the web when the web moves its submodule
-to that commit: the web's suite is the judge then, before the core's release pins that web.
+then let the web's suite judge the new passages; commit both in the same change. A rewrite reaches the web
+when the web moves its submodule to that commit: the web's suite is the judge then. Passages that
+move for a text already in the file are a blocked change (root `README.md`, «Versions»): they wait
+for the owners.
 
 Characters a diff or an editor would hide (no-break spaces and the like) are written as `\u` escapes.

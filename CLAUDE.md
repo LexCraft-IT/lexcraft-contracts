@@ -6,13 +6,20 @@ contract, decided by the owners.
 
 ## How a change travels
 
+Every change has a class, patch, minor, major or blocked, which `compat/compare.mjs` computes from
+the files (README, «Versions»; G-607…G-611).
+
 1. A pull request here: the convention's change (a new case, a changed value). `sources/README.md`
-   says what each status means; an owner's decision is quoted in the case's `note`.
+   says what each status means; an owner's decision is quoted in the case's `note`. The CI refuses a
+   `version.txt` lower than the change's class; a major raises the major and says what breaks.
 2. In lexcraft-core: the submodule moved to that commit, with the code that makes the server, the
-   Python API and MERL-T green again, in one pull request.
-3. In lexcraft-web and lexcraft-mcp: the same, each in its own pull request.
-4. The core's release checks that the web and the MCP server it pins hold the same commit of this
-   repository.
+   Python API and MERL-T green again, in one pull request. For a patch or a minor that is all: the
+   core's pin check accepts a web and an MCP server whose contract is contained in the core's.
+3. In lexcraft-web and lexcraft-mcp: the same, each in its own pull request, when it needs the
+   change; for a major, before the core's release, which refuses different majors.
+
+`compat/rules.json` is how every version is judged: changing it is the owners' decision, like a
+change of the convention.
 
 ## Never by hand
 
@@ -30,9 +37,10 @@ contract, decided by the owners.
 - Review is requested, never awaited (`.github/CODEOWNERS`).
 - The ruleset refuses pushes to `main` and `develop` and any merge whose CI is not green; the shared
   hook (`.claude/settings.json`) refuses commits on them.
-- A release is a pull request `develop → main`, then a tag `vX.Y.Z` on `main`. This repository has its
-  own version (`version.txt`, G-597): the product's version is the core's, which pins this repository
-  at one of its tags.
+- A release is a pull request `develop → main`, then a tag `vX.Y.Z` on `main` with the number of
+  `version.txt`. This repository has its own version (G-597, README «Versions»): the product's
+  version is the core's, which pins this repository at one of its tags. The tags up to `v1.70.0`
+  are the monorepo's product releases, not versions of the contract (G-608).
 
 ## Rules
 

@@ -78,9 +78,11 @@ holding `conventions/`, and fails when it is not there.
 
 ## Changing it
 
-A new case or a changed value is a change of the convention: it goes with the
-code that makes the suites green again, in the same pull request. Flipping an
-`open` status to `decided` quotes the owner's answer in the `note`.
+A new case or a changed value is a change of the convention, and it has a class
+(the root `README.md`, «Versions»): a pull request here, then in each repository
+the code that makes its suites green again (the root `CLAUDE.md`, «How a change
+travels»). Flipping an `open` status to `decided` quotes the owner's answer in
+the `note`.
 
 ## `decision_citations`
 
